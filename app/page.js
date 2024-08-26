@@ -5,6 +5,7 @@ import BlockTree from "./components/blockTree";
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
+  const [blocks, setBlocks] = useState([]);
 
   const fetchTransactions = async () => {
     try {
@@ -25,6 +26,7 @@ export default function Home() {
     }
   }
 
+
   useEffect(() => {
     fetchTransactions();
     
@@ -37,23 +39,32 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <header className="max-w-7xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Blockchain Explorer</h1>
-        <BlockTree />
+        <h1 className="text-4xl font-bold text-center text-gray-800">Blockchain Explorer</h1>
       </header>
 
       <main className="max-w-7xl mx-auto">
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-gray-700">Latest Transactions</h2>
-          <div className="space-y-4">
-            {transactions.length > 0 ? (
-              transactions.map((transaction, index) => (
-                <TransactionCard key={index} transaction={transaction} />
-              ))
-            ) : (
-              <p className="text-center text-gray-500 bg-white p-4 rounded-lg shadow-md">No transactions available.</p>
-            )}
-          </div>
-        </section>
+        <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-12">
+          <section className="md:w-1/3">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-700">Latest Blocks</h2>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <BlockTree blocks={blocks} />
+            </div>
+          </section>
+
+          <section className="md:w-2/3">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-700">Latest Transactions</h2>
+            <div className="space-y-4">
+              {transactions.length > 0 ? (
+                transactions.map((transaction, index) => (
+                  <TransactionCard key={index} transaction={transaction} />
+                ))
+              ) : (
+                <p className="text-center text-gray-500 bg-white p-4 rounded-lg shadow-md">No transactions available.</p>
+              )}
+              
+            </div>
+          </section>
+        </div>
       </main>
     </div>
   );
