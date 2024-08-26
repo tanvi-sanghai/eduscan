@@ -54,7 +54,9 @@ const TransactionCard = ({ transaction }) => {
             <p className="text-sm text-gray-600 mb-1">From</p>
             <p className="text-base font-medium text-gray-800 flex items-center">
               <FiUser className="mr-2 text-blue-500" />
+              <Link href={`/account/${transaction.from?.hash}`} passHref>
               {shortenAddress(transaction.from?.hash)}
+              </Link>
             </p>
           </div>
           <FiArrowRight className="text-gray-400 text-xl" />
@@ -62,7 +64,9 @@ const TransactionCard = ({ transaction }) => {
             <p className="text-sm text-gray-600 mb-1">To</p>
             <p className="text-base font-medium text-gray-800 flex items-center justify-end">
               <FiUser className="mr-2 text-blue-500" />
+              <Link href={`/account/${transaction.to?.hash}`} passHref>
               {shortenAddress(transaction.to?.hash)}
+              </Link>
             </p>
           </div>
         </div>
