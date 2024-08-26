@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from "react";
-import TransactionCard from "@/app/custom/transactionCard";
-import BlockTree from "./custom/blockTree";
+import TransactionCard from "@/app/components/transactionCard";
+import BlockTree from "./components/blockTree";
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);

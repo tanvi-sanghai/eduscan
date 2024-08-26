@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FiClock, FiHash, FiUser, FiBox, FiChevronUp } from "react-icons/fi";
+import Link from 'next/link'; // Import Link from Next.js
 
 const BlockTree = () => {
   const [blocks, setBlocks] = useState([]);
@@ -52,7 +53,9 @@ const BlockTree = () => {
   const BlockCard = ({ block, isLatest }) => (
     <div className={`bg-white rounded-xl shadow-lg p-6  ${isLatest ? 'border-l-8 border-blue-500' : 'border-l-8 border-gray-200'} w-full max-w-5xl mx-auto transition-all duration-300 hover:shadow-xl hover:scale-102`}>
       <div className="flex justify-between items-center mb-4 gap-4">
+      <Link href={`/block/${block.height}`} passHref>
         <span className={`font-bold ${isLatest ? 'text-4xl text-blue-600' : 'text-3xl text-gray-700'}`}>#{block.height}</span>
+      </Link>
         <span className="text-sm bg-gray-100 text-gray-600 py-1 px-3 rounded-full flex items-center">
           <FiClock className="mr-2" />
           {formatTimestamp(block.timestamp)}
