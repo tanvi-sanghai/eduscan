@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { FiClock, FiHash, FiUser, FiBox, FiChevronUp } from "react-icons/fi";
-import Link from 'next/link'; // Import Link from Next.js
+import { FiClock, FiHash, FiUser, FiBox, FiChevronRight } from "react-icons/fi";
+import Link from 'next/link';
 
 const BlockTree = () => {
   const [blocks, setBlocks] = useState([]);
@@ -19,6 +19,7 @@ const BlockTree = () => {
       }
 
       const data = await response.json();
+      console.log("Fetched blocks:", data); // Log the fetched data
       setBlocks(data || []);
     } catch (error) {
       console.error("Error fetching blocks:", error);
@@ -51,42 +52,50 @@ const BlockTree = () => {
   };
 
   const BlockCard = ({ block, isLatest }) => (
-    <div className={`bg-white rounded-xl shadow-lg p-6  ${isLatest ? 'border-l-8 border-blue-500' : 'border-l-8 border-gray-200'} w-full max-w-5xl mx-auto transition-all duration-300 hover:shadow-xl hover:scale-102`}>
-      <div className="flex justify-between items-center mb-4 gap-4">
-      <Link href={`/block/${block.height}`} passHref>
-        <span className={`font-bold ${isLatest ? 'text-4xl text-blue-600' : 'text-3xl text-gray-700'}`}>#{block.height}</span>
-      </Link>
-        <span className="text-sm bg-gray-100 text-gray-600 py-1 px-3 rounded-full flex items-center">
-          <FiClock className="mr-2" />
+    <div className={`bg-white rounded-xl shadow-lg p-4 ${isLatest ? 'border-l-8 border-blue-500' : 'border-l-8 border-gray-200'} w-80 transition-all duration-300 hover:shadow-xl hover:scale-102`}>
+      <div className="flex justify-between items-center mb-3">
+        <Link href={`/block/${block.height}`} passHref>
+          <span className={`font-bold ${isLatest ? 'text-3xl text-blue-600' : 'text-2xl text-gray-700'}`}>#{block.height}</span>
+        </Link>
+        <span className="text-sm bg-gray-100 text-gray-600 py-1 px-2 rounded-full flex items-center">
+          <FiClock className="mr-1" />
           {formatTimestamp(block.timestamp)}
         </span>
       </div>
-      <div className="space-y-3">
-        <div className="flex items-center bg-gray-50 p-3 rounded">
-          <FiUser className="mr-3 text-blue-500 text-xl" />
+      <div className="space-y-2">
+        <div className="flex items-center bg-gray-50 p-2 rounded">
+          <FiUser className="mr-2 text-blue-500 text-lg" />
           <span className="text-sm font-medium truncate">{block.miner.ens_domain_name || block.miner.hash}</span>
         </div>
-        <div className="flex items-center bg-gray-50 p-3 rounded">
-          <FiHash className="mr-3 text-blue-500 text-xl" />
+        <div className="flex items-center bg-gray-50 p-2 rounded">
+          <FiHash className="mr-2 text-blue-500 text-lg" />
           <span className="text-sm font-medium truncate">{block.hash}</span>
         </div>
-        <div className="flex items-center bg-gray-50 p-3 rounded">
-          <FiBox className="mr-3 text-blue-500 text-xl" />
+        <div className="flex items-center bg-gray-50 p-2 rounded">
+          <FiBox className="mr-2 text-blue-500 text-lg" />
           <span className="text-sm font-medium">{block.tx_count} transactions</span>
         </div>
       </div>
     </div>
   );
 
+  const getDisplayBlocks = () => {
+    let displayBlocks = [...blocks];
+    while (displayBlocks.length < 8) {
+      displayBlocks = [...displayBlocks, ...blocks];
+    }
+    return displayBlocks.slice(0, 8);
+  };
+
   return (
-    <div className="p-8 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100">
-   <div className="space-y-2">
-        {blocks.slice(0, 4).map((block, index) => (
-          <div key={block.hash} className="flex flex-col items-center">
+    <div className="p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 overflow-x-auto">
+      <div className="flex space-x-4 min-w-max">
+        {getDisplayBlocks().map((block, index) => (
+          <div key={`${block.hash}-${index}`} className="flex items-center">
             <BlockCard block={block} isLatest={index === 0} />
-            {index < 3 && (
-              <div className="h-10 flex items-center justify-center mt-2">
-                <FiChevronUp className="text-3xl text-blue-500" />
+            {index < 7 && (
+              <div className="w-6 flex items-center justify-center">
+                <FiChevronRight className="text-2xl text-blue-500" />
               </div>
             )}
           </div>
