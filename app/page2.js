@@ -1,10 +1,13 @@
-'use client'
-import { useEffect, useState } from "react";
-import TransactionCard from "@/app/custom/transactionCard";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import TransactionCard from "@/app/components/TransactionCard";
+import BlockCard from "@/app/components/BlockCard";
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
   const [blocks, setBlocks] = useState([]);
+  const [error, setError] = useState(null);
 
   const fetchTransactions = async () => {
     try {
@@ -15,14 +18,13 @@ export default function Home() {
         }
       });
 
-      if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (!response.ok) { throw new Error(HTTP error! Status: ${response.status}); }
 
       const data = await response.json();
-      console.log(data);
       setTransactions(data || []);
     } catch (error) {
       console.error("Error fetching transactions:", error);
+      setError(error.message);
     }
   }
 
@@ -35,8 +37,7 @@ export default function Home() {
         }
       });
 
-      if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+      if (!response.ok) { throw new Error(HTTP error! Status: ${response.status}); }
 
       const data = await response.json();
       console.log("Blocks data:", data);  // Add this line to debug
@@ -54,6 +55,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
+      {error && <p className="text-red-500 text-center">Error: {error}</p>}
+
       <h1 className="text-3xl font-bold text-center mb-8">Latest Transactions</h1>
       <div className="max-w-4xl mx-auto">
         {transactions.length > 0 ? (
@@ -62,6 +65,17 @@ export default function Home() {
           ))
         ) : (
           <p className="text-center text-gray-500">No transactions available.</p>
+        )}
+      </div>
+
+      <h1 className="text-3xl font-bold text-center mb-8 mt-12">Latest Blocks</h1>
+      <div className="max-w-4xl mx-auto">
+        {blocks.length > 0 ? (
+          blocks.map((block, index) => (
+            <BlockCard key={index} block={block} />
+          ))
+        ) : (
+          <p className="text-center text-gray-500">No blocks available.</p>
         )}
       </div>
     </div>
