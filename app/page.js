@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import TransactionCard from "@/app/components/transactionCard";
 import BlockTree from "./components/blockTree";
+import StatsBox from "./components/statsBox";
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
@@ -39,17 +40,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <header className="max-w-7xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold text-center text-gray-800">Blockchain Explorer</h1>
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Blockchain Explorer</h1>
+        <BlockTree />
       </header>
 
       <main className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-12">
-          <section className="md:w-1/3">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-700">Latest Blocks</h2>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <BlockTree blocks={blocks} />
-            </div>
-          </section>
+        <div className="flex flex-col md:flex-row gap-8">
+          <StatsBox/ >
 
           <section className="md:w-2/3">
             <h2 className="text-2xl font-semibold mb-4 text-gray-700">Latest Transactions</h2>
@@ -61,7 +58,6 @@ export default function Home() {
               ) : (
                 <p className="text-center text-gray-500 bg-white p-4 rounded-lg shadow-md">No transactions available.</p>
               )}
-              
             </div>
           </section>
         </div>
