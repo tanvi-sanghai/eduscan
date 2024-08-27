@@ -1,77 +1,100 @@
-'use client'
-import { useEffect, useState } from 'react';
-import { FiUser, FiDollarSign, FiHash, FiCheckCircle, FiXCircle, FiClock, FiBox, FiTag } from 'react-icons/fi';
-import TransactionCard from '@/app/components/transactionCard';
+"use client";
+
+import React, { useEffect, useState } from "react";
+import {
+  FiUser,
+  FiDollarSign,
+  FiHash,
+  FiCheckCircle,
+  FiXCircle,
+  FiClock,
+  FiBox,
+  FiTag,
+} from "react-icons/fi";
+import LoadingSpinner from "@/app/components/loadingSpinner";
+import TransactionCard from "@/app/components/transactionCard";
+import TokenCard from "@/app/components/tokenCard";
+import TokenTransfersTab from "@/app/components/tokenTransferTab";
+
+const API_BASE_URL = "https://opencampus-codex.blockscout.com/api/v2";
 
 export default function AccountPage({ params }) {
-    const [account, setAccount] = useState(null);
-    const [transactions, setTransactions] = useState([]);
-    const [tokens, setTokens] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('overview');
+  const [accountData, setAccountData] = useState({
+    account: null,
+    transactions: [],
+    tokens: [],
+    tokenTransfers: [],
+    
+  });
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("transactions");
 
-    useEffect(() => {
-        const fetchAccount = async () => {
-          try {
-            const response = await fetch(`https://opencampus-codex.blockscout.com/api/v2/addresses/${params.id}`);
-            if (!response.ok) throw new Error('Failed to fetch account');
+  useEffect(() => {
+    const fetchAllData = async () => {
+      const endpoints = {
+        account: `/addresses/${params.id}`,
+        transactions: `/addresses/${params.id}/transactions?filter=to%20%7C%20from`,
+        tokens: `/addresses/${params.id}/tokens?type=ERC-20%2CERC-721%2CERC-1155`,
+        tokenTransfers: `/addresses/${params.id}/token-transfers?type=ERC-20%2CERC-721%2CERC-1155&filter=to%20%7C%20from`,
+        internalTransactions: `/addresses/${params.id}/internal-transactions`,
+        coinBalanceHistory: `/addresses/${params.id}/coin-balance-history`
+      };
+
+      try {
+        const results = await Promise.all(
+          Object.entries(endpoints).map(async ([key, endpoint]) => {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`);
+            if (!response.ok) throw new Error(`Failed to fetch ${key}`);
             const data = await response.json();
-            setAccount(data);
-          } catch (error) {
-            console.error('Error fetching account:', error);
-          } finally {
-            setLoading(false);
-          }
-        };
-    
-        fetchAccount();
-      }, [params.id]);
-    
-      useEffect(() => {
-        const fetchTransactions = async () => {
-          if (activeTab === 'transactions') {
-            try {
-              const response = await fetch(`https://opencampus-codex.blockscout.com/api/v2/addresses/${params.id}/transactions?filter=to%20%7C%20from`);
-              if (!response.ok) throw new Error('Failed to fetch transactions');
-              const data = await response.json();
-              setTransactions(data.items || []);
-            } catch (error) {
-              console.error('Error fetching transactions:', error);
-            }
-          }
-        };
-    
-        fetchTransactions();
-      }, [params.id, activeTab]);
-    
-      useEffect(() => {
-        const fetchTokens = async () => {
-          if (activeTab === 'tokens') {
-            try {
-              const response = await fetch(`https://opencampus-codex.blockscout.com/api/v2/addresses/${params.id}/tokens?type=ERC-20%2CERC-721%2CERC-1155`);
-              if (!response.ok) throw new Error('Failed to fetch tokens');
-              const data = await response.json();
-              setTokens(data.items || []);
-            } catch (error) {
-              console.error('Error fetching tokens:', error);
-            }
-          }
-        };
-    
-        fetchTokens();
-      }, [params.id, activeTab]);
-    
-      if (loading) return <LoadingSpinner />;
-      if (!account) return <ErrorMessage message="Account not found" />;
-    
-      const tabs = [
-        { id: 'overview', label: 'Overview' },
-        { id: 'transactions', label: 'Transactions' },
-        { id: 'tokens', label: 'Tokens' },
-        { id: 'tokenTransfers', label: 'Token Transfers' },
-        { id: 'coinBalanceHistory', label: 'Coin Balance History' },
-      ];
-    
+            return [key, key === 'account' ? data : data.items || []];
+          })
+        );
+
+        setAccountData(Object.fromEntries(results));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [params.id]);
+
+  if (loading) return <LoadingSpinner />;
+  if (!accountData.account) return <ErrorMessage message="Account not found" />;
+
+  const { account } = accountData;
+
+  const tabs = [
+    { id: "transactions", label: "Transactions" },
+    { id: "tokens", label: "Tokens" },
+    { id: "tokenTransfers", label: "Token Transfers" },
+  ];
+
+  const accountInfo = [
+    {
+      icon: FiDollarSign,
+      label: "Balance",
+      value: `${parseFloat(account.coin_balance) / 1e18} ETH`,
+    },
+    {
+      icon: FiUser,
+      label: "Account Type",
+      value: account.is_contract ? "Contract" : "EOA",
+    },
+    {
+      icon: account.is_verified ? FiCheckCircle : FiXCircle,
+      label: "Verified",
+      value: account.is_verified ? "Yes" : "No",
+    },
+    {
+      icon: FiClock,
+      label: "Last Balance Update",
+      value: `Block #${account.block_number_balance_updated_at}`,
+    },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 bg-gray-50 min-h-screen">
       <div className="bg-white shadow-sm rounded-lg overflow-hidden mb-8">
@@ -84,26 +107,9 @@ export default function AccountPage({ params }) {
         </div>
 
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InfoItem
-            icon={FiDollarSign}
-            label="Balance"
-            value={`${parseFloat(account.coin_balance) / 1e18} ETH`}
-          />
-          <InfoItem
-            icon={FiUser}
-            label="Account Type"
-            value={account.is_contract ? 'Contract' : 'EOA'}
-          />
-          <InfoItem
-            icon={account.is_verified ? FiCheckCircle : FiXCircle}
-            label="Verified"
-            value={account.is_verified ? 'Yes' : 'No'}
-          />
-          <InfoItem
-            icon={FiClock}
-            label="Last Balance Update"
-            value={`Block #${account.block_number_balance_updated_at}`}
-          />
+          {accountInfo.map((item, index) => (
+            <InfoItem key={index} {...item} />
+          ))}
         </div>
       </div>
 
@@ -116,8 +122,8 @@ export default function AccountPage({ params }) {
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-6 text-sm font-medium ${
                   activeTab === tab.id
-                    ? 'border-b-2 border-blue-500 text-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? "border-b-2 border-blue-500 text-blue-600"
+                    : "text-gray-500 hover:text-gray-700"
                 }`}
               >
                 {tab.label}
@@ -127,11 +133,15 @@ export default function AccountPage({ params }) {
         </div>
 
         <div className="p-6">
-          {activeTab === 'overview' && <OverviewTab account={account} />}
-          {activeTab === 'transactions' && <TransactionsTab transactions={transactions} />}
-          {activeTab === 'tokens' && <TokensTab tokens={tokens} />}
-          {activeTab === 'tokenTransfers' && <p>Token transfers data will be shown here.</p>}
-          {activeTab === 'coinBalanceHistory' && <p>Coin balance history will be shown here.</p>}
+          {activeTab === "transactions" && (
+            <TransactionsTab transactions={accountData.transactions} />
+          )}
+          {activeTab === "tokens" && <TokensTab tokens={accountData.tokens} />}
+          {activeTab === "tokenTransfers" && (
+            console.log(accountData.tokenTransfers),
+            <TokenTransfersTab transfers={accountData.tokenTransfers} currentAddress={params.id} />
+          )}
+          
         </div>
       </div>
     </div>
@@ -148,20 +158,6 @@ const InfoItem = ({ icon: Icon, label, value }) => (
   </div>
 );
 
-const OverviewTab = ({ account }) => (
-  <div className="space-y-4">
-    <p className="text-gray-700">
-      This account {account.has_token_transfers ? 'has' : 'does not have'} token transfers.
-    </p>
-    <p className="text-gray-700">
-      This account {account.has_tokens ? 'holds' : 'does not hold'} tokens.
-    </p>
-    {account.ens_domain_name && (
-      <p className="text-gray-700">ENS Domain: {account.ens_domain_name}</p>
-    )}
-  </div>
-);
-
 const TransactionsTab = ({ transactions }) => (
   <div className="space-y-4">
     <h2 className="text-2xl font-semibold mb-4 text-gray-700">Transactions</h2>
@@ -170,14 +166,10 @@ const TransactionsTab = ({ transactions }) => (
         <TransactionCard key={index} transaction={transaction} />
       ))
     ) : (
-      <p className="text-center text-gray-500 bg-white p-4 rounded-lg shadow-md">No transactions available.</p>
+      <p className="text-center text-gray-500 bg-white p-4 rounded-lg shadow-md">
+        No transactions available.
+      </p>
     )}
-  </div>
-);
-
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
   </div>
 );
 
@@ -186,51 +178,21 @@ const ErrorMessage = ({ message }) => (
 );
 
 const TokensTab = ({ tokens }) => (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-700">Tokens</h2>
-      {tokens.length > 0 ? (
-        tokens.map((tokenItem, index) => (
-          <TokenCard key={index} token={tokenItem.token} value={tokenItem.value} />
-        ))
-      ) : (
-        <p className="text-center text-gray-500 bg-white p-4 rounded-lg shadow-md">No tokens available.</p>
-      )}
-    </div>
-  );
-  
-  const TokenCard = ({ token, value }) => (
-    <div className="bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center">
-          <FiBox className="text-blue-500 mr-2" />
-          <span className="font-semibold text-lg">{token.name} ({token.symbol})</span>
-        </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-          token.type === 'ERC-20' ? 'bg-green-100 text-green-800' :
-          token.type === 'ERC-721' ? 'bg-purple-100 text-purple-800' :
-          'bg-orange-100 text-orange-800'
-        }`}>
-          {token.type}
-        </span>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <p className="text-sm text-gray-500">Balance</p>
-          <p className="font-medium">{parseFloat(value) / Math.pow(10, parseInt(token.decimals))} {token.symbol}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Total Supply</p>
-          <p className="font-medium">{parseFloat(token.total_supply) / Math.pow(10, parseInt(token.decimals))}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Holders</p>
-          <p className="font-medium">{token.holders}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Contract Address</p>
-          <p className="font-medium text-sm truncate">{token.address}</p>
-        </div>
-      </div>
-    </div>
-  );
-  
+  <div className="space-y-4">
+    <h2 className="text-2xl font-semibold mb-4 text-gray-700">Tokens</h2>
+    {tokens.length > 0 ? (
+      tokens.map((tokenItem, index) => (
+        <TokenCard
+          key={index}
+          token={tokenItem.token}
+          value={tokenItem.value}
+        />
+      ))
+    ) : (
+      <p className="text-center text-gray-500 bg-white p-4 rounded-lg shadow-md">
+        No tokens available.
+      </p>
+    )}
+  </div>
+);
+

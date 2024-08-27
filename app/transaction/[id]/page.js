@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from "react";
 import { FiClock, FiCheck, FiX, FiArrowRight, FiUser, FiBox, FiFileText, FiDollarSign, FiCpu, FiHash, FiExternalLink, FiLayers, FiCode } from "react-icons/fi";
+import LoadingSpinner from "@/app/components/loadingSpinner";
 
 export default function TransactionPage({ params }) {
   const { id } = params;
@@ -127,12 +128,6 @@ const AddressItem = ({ label, address }) => (
         {address ? (address.hash || 'N/A') : 'N/A'}
       </span>
     </div>
-  </div>
-);
-
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
   </div>
 );
 

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import { FiClock, FiHash, FiUser, FiBox, FiCpu, FiDollarSign, FiLayers, FiServer } from 'react-icons/fi';
+import LoadingSpinner from '@/app/components/loadingSpinner';
 
 export default function BlockPage({ params }) {
   const [block, setBlock] = useState(null);
@@ -99,12 +100,6 @@ const InfoItem = ({ icon: Icon, label, value }) => (
       <p className="text-xs text-gray-500">{label}</p>
       <p className="text-sm font-medium text-gray-800">{value}</p>
     </div>
-  </div>
-);
-
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
   </div>
 );
 
