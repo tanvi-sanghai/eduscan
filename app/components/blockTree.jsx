@@ -58,7 +58,7 @@ const BlockTree = () => {
 
   useEffect(() => {
     fetchBlocks();
-    const interval = setInterval(fetchBlocks, 5000); // Fetch every 15 seconds
+    const interval = setInterval(fetchBlocks, 5000); // Fetch every 5 seconds
     return () => clearInterval(interval);
   }, []);
 
@@ -73,16 +73,19 @@ const BlockTree = () => {
     return `${Math.floor(diffInSeconds / 86400)}d ago`;
   };
 
-  const BlockCard = ({ block, isPredicted, isAnimating }) => (
+  const BlockCard = ({ block, isPredicted, isAnimating, isLatest }) => (
     <div className={`w-48 h-48 rounded-lg shadow-md border-2 mx-4
                     transition-all duration-1000 ease-in-out
                     flex flex-col justify-center items-center p-4 relative overflow-hidden
                     ${isPredicted ? 'bg-blue-800 border-blue-600 text-white' : 'bg-white border-gray-200'}
+                    ${isLatest && !isPredicted ? 'border-blue-600 border-4' : ''}
                     ${isAnimating ? 'transform translate-x-[calc(100%+2rem)]' : ''}`}>
       <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-purple-500"></div>
       {isPredicted ? (
         <div className="text-center">
+        
           <span className="font-bold text-2xl mb-2 block">#{block.height}</span>
+          
           <div className="text-lg font-medium">
             Incoming
           </div>
@@ -90,8 +93,10 @@ const BlockTree = () => {
       ) : (
         <>
           <div className="flex justify-between items-start mb-2 w-full">
-            <span className="font-bold text-lg text-gray-700">
+            <span className="font-bold text-lg text-blue-600">
+            <Link href={`/block/${block.height}`}>
               #{block.height}
+            </Link>
             </span>
             <span className="text-xs bg-gray-100 text-gray-600 py-1 px-2 rounded-full flex items-center">
               <FiClock className="mr-1" />
@@ -117,12 +122,6 @@ const BlockTree = () => {
     </div>
   );
 
-  const Chevron = ({ color }) => (
-    <div className="flex items-center justify-center w-8 h-48">
-      <FiChevronRight className={`text-4xl ${color}`} />
-    </div>
-  );
-
   return (
     <div className="p-8 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 overflow-x-auto" ref={containerRef}>
       <div className="flex items-center min-w-max">
@@ -132,8 +131,8 @@ const BlockTree = () => {
               block={block} 
               isPredicted={true} 
               isAnimating={animatingBlock?.height === block.height && !animationComplete} 
+              isLatest={false}
             />
-            {/* {index === 0 && <div className="px-2"><Chevron color="text-blue-300" /></div>} */}
           </React.Fragment>
         ))}
         <div className="mx-4 h-48 border-l-4 border-dashed border-blue-500 shadow-lg"></div>
@@ -142,8 +141,8 @@ const BlockTree = () => {
             <BlockCard 
               block={block} 
               isAnimating={animatingBlock?.height === block.height && animationComplete} 
+              isLatest={index === 0}
             />
-            {/* {index < blocks.length - 1 && <div className="px-2"><Chevron color="text-blue-500" /></div>} */}
           </React.Fragment>
         ))}
       </div>
