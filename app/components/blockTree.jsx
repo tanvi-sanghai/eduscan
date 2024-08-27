@@ -72,7 +72,9 @@ const BlockTree = () => {
       <div>
         <div className="flex justify-between items-start mb-2">
           <span className={`font-bold text-lg ${isPredicted ? 'text-indigo-600' : 'text-gray-700'}`}>
+            <Link href={`/block/${block.height}`}>
             #{block.height}
+            </Link>
           </span>
           {!isPredicted && (
             <span className="text-xs bg-gray-100 text-gray-600 py-1 px-2 rounded-full flex items-center">
