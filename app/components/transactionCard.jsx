@@ -38,77 +38,56 @@ const TransactionCard = ({ transaction }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 mb-4 border border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-md w-full">
-      <div className="flex justify-between items-center mb-4">
-        <span className={`text-sm font-medium px-3 py-1 rounded-full flex items-center ${getTxTypeColor(transaction.tx_types)}`}>
-          <FiFile className="mr-2" /> {getTxTypeLabel(transaction.tx_types)}
-        </span>
-        <span className="text-sm font-medium text-green-500 bg-green-100 px-3 py-1 rounded-full flex items-center">
-          <FiCheckCircle className="mr-2" /> Success
+    <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-md w-full">
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center space-x-2">
+          <span className={`text-xs font-medium px-2 py-1 rounded-full ${getTxTypeColor(transaction.tx_types)}`}>
+            <FiFile className="inline mr-1" /> {getTxTypeLabel(transaction.tx_types)}
+          </span>
+          <span className="text-xs font-medium text-green-500 bg-green-100 px-2 py-1 rounded-full">
+            <FiCheckCircle className="inline mr-1" /> Success
+          </span>
+        </div>
+        <span className="text-xs text-gray-500">
+          <FiClock className="inline mr-1" /> {formattedTimestamp}
         </span>
       </div>
 
-      <div className="flex items-center mb-4">
-        <div className="flex-grow flex justify-between items-center">
-          <div className="w-5/12">
-            <p className="text-sm text-gray-600 mb-1">From</p>
-            <p className="text-base font-medium flex items-center">
-              <FiUser className="mr-2 text-blue-500" />
-              <Link href={`/account/${transaction.from?.hash}`} passHref>
-                <span className="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200">
-                  {shortenAddress(transaction.from?.hash)}
-                </span>
-              </Link>
-            </p>
-          </div>
-          <FiArrowRight className="text-gray-400 text-xl" />
-          <div className="w-5/12 text-right">
-            <p className="text-sm text-gray-600 mb-1">To</p>
-            <p className="text-base font-medium flex items-center justify-end">
-              <FiUser className="mr-2 text-blue-500" />
-              <Link href={`/account/${transaction.to?.hash}`} passHref>
-                <span className="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200">
-                  {shortenAddress(transaction.to?.hash)}
-                </span>
-              </Link>
-            </p>
-          </div>
+      <div className="flex items-center justify-between mb-2 text-sm">
+        <div className="flex items-center">
+          <FiUser className="text-blue-500 mr-1" />
+          <Link href={`/account/${transaction.from?.hash}`}>
+            <span className="text-blue-600 hover:text-blue-800 hover:underline">{shortenAddress(transaction.from?.hash)}</span>
+          </Link>
+        </div>
+        <FiArrowRight className="text-gray-400 mx-2" />
+        <div className="flex items-center">
+          <FiUser className="text-blue-500 mr-1" />
+          <Link href={`/account/${transaction.to?.hash}`}>
+            <span className="text-blue-600 hover:text-blue-800 hover:underline">{shortenAddress(transaction.to?.hash)}</span>
+          </Link>
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-sm mb-4">
-        <span className="text-gray-600 flex items-center">
-          <FiBox className="mr-2 text-blue-500" />
-          Block: 
-          <Link href={`/block/${transaction.block}`} passHref>
-            <span className="font-medium text-blue-600 hover:text-blue-800 hover:underline ml-1 transition-colors duration-200">
-              {transaction.block}
-            </span>
-          </Link>
-        </span>
-        <span className="text-gray-600">
-          Fee: 
-          <span className="font-medium text-gray-800 ml-1">{transaction.fee?.value || 'N/A'} wei</span>
-        </span>
-      </div>
-
-      <div className="flex items-center mb-4">
-        <FiHash className="text-blue-500 mr-2" />
-        <Link href={`/transaction/${transaction.hash}`} passHref>
-          <span className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200">
-            {shortenHash(transaction.hash)}
+      <div className="flex justify-between items-center text-xs">
+        <div className="flex items-center space-x-2">
+          <span className="text-gray-600">
+            <FiBox className="inline text-blue-500 mr-1" />
+            Block: 
+            <Link href={`/block/${transaction.block}`}>
+              <span className="font-medium text-blue-600 hover:text-blue-800 hover:underline ml-1">{transaction.block}</span>
+            </Link>
           </span>
-        </Link>
-      </div>
-
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-500 flex items-center">
-          <FiClock className="mr-2" /> {formattedTimestamp}
-        </span>
-        <Link href={`/transaction/${transaction.hash}`} passHref>
-          <div className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center bg-blue-50 px-3 py-2 rounded-full transition-colors duration-300 hover:bg-blue-100 cursor-pointer">
-            View Details <FiArrowRight className="ml-2" />
-          </div>
+          <span className="text-gray-600">
+            Fee: <span className="font-medium text-gray-800">{transaction.fee?.value || 'N/A'} wei</span>
+          </span>
+        </div>
+        <Link href={`/transaction/${transaction.hash}`}>
+          <span className="text-blue-600 hover:text-blue-800 hover:underline flex items-center">
+            <FiHash className="mr-1" />
+            {shortenHash(transaction.hash)}
+            <FiArrowRight className="ml-1" />
+          </span>
         </Link>
       </div>
     </div>

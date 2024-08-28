@@ -74,51 +74,56 @@ const BlockTree = () => {
   };
 
   const BlockCard = ({ block, isPredicted, isAnimating, isLatest }) => (
-    <div className={`w-48 h-48 rounded-lg shadow-md border-2 mx-4
-                    transition-all duration-1000 ease-in-out
-                    flex flex-col justify-center items-center p-4 relative overflow-hidden
-                    ${isPredicted ? 'bg-blue-800 border-blue-600 text-white' : 'bg-white border-gray-200'}
-                    ${isLatest && !isPredicted ? 'border-blue-600 border-4' : ''}
-                    ${isAnimating ? 'transform translate-x-[calc(100%+2rem)]' : ''}`}>
-      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-purple-500"></div>
-      {isPredicted ? (
-        <div className="text-center">
-        
-          <span className="font-bold text-2xl mb-2 block">#{block.height}</span>
-          
-          <div className="text-lg font-medium">
-            Incoming
-          </div>
+    <div className="relative pt-6"> {/* Added pt-6 for space above the square */}
+      {isLatest && !isPredicted && (
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-blue-800 text-white text-xs font-bold py-1 px-3 rounded-t-lg z-10">
+          Latest Block
         </div>
-      ) : (
-        <>
-          <div className="flex justify-between items-start mb-2 w-full">
-            <span className="font-bold text-lg text-blue-600">
-            <Link href={`/block/${block.height}`}>
-              #{block.height}
-            </Link>
-            </span>
-            <span className="text-xs bg-gray-100 text-gray-600 py-1 px-2 rounded-full flex items-center">
-              <FiClock className="mr-1" />
-              {formatTimestamp(block.timestamp)}
-            </span>
-          </div>
-          <div className="space-y-2 text-xs w-full">
-            <div className="flex items-center bg-gray-50 p-1 rounded">
-              <FiUser className="mr-1 text-blue-500" />
-              <span className="font-medium truncate">{block.miner?.ens_domain_name || block.miner?.hash.slice(0, 10) + '...'}</span>
-            </div>
-            <div className="flex items-center bg-gray-50 p-1 rounded">
-              <FiHash className="mr-1 text-blue-500" />
-              <span className="font-medium truncate">{block.hash?.slice(0, 10) + '...'}</span>
-            </div>
-          </div>
-          <div className="flex items-center justify-between bg-gray-50 p-2 rounded mt-2 w-full">
-            <FiBox className="text-blue-500" />
-            <span className="font-medium text-sm">{block.tx_count} transactions</span>
-          </div>
-        </>
       )}
+      <div className={`w-48 h-48 rounded-lg shadow-md border-2 mx-4
+                      transition-all duration-1000 ease-in-out
+                      flex flex-col justify-center items-center p-4 relative overflow-hidden
+                      ${isPredicted ? 'bg-blue-800 border-blue-600 text-white' : 'bg-white border-gray-200'}
+                      ${isLatest && !isPredicted ? 'border-blue-800 border-4 rounded-t-none' : ''}
+                      ${isAnimating ? 'transform translate-x-[calc(100%+2rem)]' : ''}`}>
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+        {isPredicted ? (
+          <div className="text-center">
+            <span className="font-bold text-2xl mb-2 block">#{block.height}</span>
+            <div className="text-lg font-medium">
+              Incoming
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-between items-start mb-2 w-full">
+              <span className="font-bold text-lg text-blue-600">
+                <Link href={`/block/${block.height}`}>
+                  #{block.height}
+                </Link>
+              </span>
+              <span className="text-xs bg-gray-100 text-gray-600 py-1 px-2 rounded-full flex items-center">
+                <FiClock className="mr-1" />
+                {formatTimestamp(block.timestamp)}
+              </span>
+            </div>
+            <div className="space-y-2 text-xs w-full">
+              <div className="flex items-center bg-gray-50 p-1 rounded">
+                <FiUser className="mr-1 text-blue-500" />
+                <span className="font-medium truncate">{block.miner?.ens_domain_name || block.miner?.hash.slice(0, 10) + '...'}</span>
+              </div>
+              <div className="flex items-center bg-gray-50 p-1 rounded">
+                <FiHash className="mr-1 text-blue-500" />
+                <span className="font-medium truncate">{block.hash?.slice(0, 10) + '...'}</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between bg-gray-50 p-2 rounded mt-2 w-full">
+              <FiBox className="text-blue-500" />
+              <span className="font-medium text-sm">{block.tx_count} transactions</span>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 
