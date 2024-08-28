@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import BlockTree from "@/app/components/blockTree";
 import { FiChevronDown, FiRefreshCw } from 'react-icons/fi';
 import BlockDetails from '@/app/components/BlockDetails';
 
@@ -13,8 +12,6 @@ export default function Home() {
         method: []
     });
     const [openDropdown, setOpenDropdown] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const blocksPerPage = 50;
 
     const fetchBlocks = async () => {
         setLoading(true);
@@ -22,10 +19,9 @@ export default function Home() {
             filter: activeTab === 'mined' ? 'validated' : 'pending',
             ...(filters.type.length && { type: filters.type.join(',') }),
             ...(filters.method.length && { method: filters.method.join(',') }),
-            page: currentPage,
-            limit: blocksPerPage
+            limit: 50  // You can adjust this number as needed
         });
-        const url = `https://opencampus-codex.blockscout.com/api/v2/blocks?type=block${queryParams}`;
+        const url = `https://opencampus-codex.blockscout.com/api/v2/blocks?type=block&${queryParams}`;
 
         try {
             const response = await fetch(url);
@@ -41,7 +37,7 @@ export default function Home() {
 
     useEffect(() => {
         fetchBlocks();
-    }, [activeTab, filters, currentPage]);
+    }, [activeTab, filters]);
 
     const handleFilterChange = (filterType, value) => {
         setFilters(prevFilters => ({
@@ -85,9 +81,6 @@ export default function Home() {
             )}
         </div>
     );
-
-    const handleNextPage = () => setCurrentPage(prevPage => prevPage + 1);
-    const handlePreviousPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -141,24 +134,6 @@ export default function Home() {
                         </a>
                     </nav>
                 </div>
-            </div>
-
-            {/* Pagination Controls */}
-            <div className="flex justify-between items-center mb-4">
-                <button 
-                    onClick={handlePreviousPage}
-                    className={`bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    disabled={currentPage === 1}
-                >
-                    Previous
-                </button>
-                <span className="text-gray-700">Page {currentPage}</span>
-                <button 
-                    onClick={handleNextPage}
-                    className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
-                >
-                    Next
-                </button>
             </div>
 
             {loading ? (
