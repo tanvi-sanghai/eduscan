@@ -64,7 +64,7 @@ const Header = () => {
 
     switch (searchResult.type) {
       case 'address':
-        return `/address/${searchResult.address}`;
+        return `/account/${searchResult.address}`;
       case 'transaction':
         return `/tx/${searchResult.tx_hash}`;
       case 'block':
