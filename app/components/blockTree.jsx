@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FiClock, FiHash, FiUser, FiBox, FiChevronRight } from "react-icons/fi";
+import { FiClock, FiHash, FiUser, FiBox, FiChevronRight, FiArrowRight } from "react-icons/fi";
 import Link from 'next/link';
 
 const BlockTree = () => {
@@ -128,28 +128,36 @@ const BlockTree = () => {
   );
 
   return (
-    <div className="p-8 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 overflow-x-auto" ref={containerRef}>
-      <div className="flex items-center min-w-max">
-        {predictedBlocks.map((block, index) => (
-          <React.Fragment key={block.height}>
-            <BlockCard 
-              block={block} 
-              isPredicted={true} 
-              isAnimating={animatingBlock?.height === block.height && !animationComplete} 
-              isLatest={false}
-            />
-          </React.Fragment>
-        ))}
-        <div className="mx-4 h-48 border-l-4 border-dashed border-blue-500 shadow-lg"></div>
-        {blocks.map((block, index) => (
-          <React.Fragment key={block.hash}>
-            <BlockCard 
-              block={block} 
-              isAnimating={animatingBlock?.height === block.height && animationComplete} 
-              isLatest={index === 0}
-            />
-          </React.Fragment>
-        ))}
+    <div className="relative p-8 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden" ref={containerRef}>
+      <div className="absolute top-4 right-8 z-10">
+        <Link href="/block" className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-300 font-medium">
+          View All Blocks
+          <FiArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+      <div className="overflow-x-auto">
+        <div className="flex items-center min-w-max">
+          {predictedBlocks.map((block, index) => (
+            <React.Fragment key={block.height}>
+              <BlockCard 
+                block={block} 
+                isPredicted={true} 
+                isAnimating={animatingBlock?.height === block.height && !animationComplete} 
+                isLatest={false}
+              />
+            </React.Fragment>
+          ))}
+          <div className="mx-4 h-48 border-l-4 border-dashed border-blue-500 shadow-lg"></div>
+          {blocks.map((block, index) => (
+            <React.Fragment key={block.hash}>
+              <BlockCard 
+                block={block} 
+                isAnimating={animatingBlock?.height === block.height && animationComplete} 
+                isLatest={index === 0}
+              />
+            </React.Fragment>
+          ))}
+        </div>
       </div>
     </div>
   );
