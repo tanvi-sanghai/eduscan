@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FiClock, FiCheck, FiX, FiArrowRight, FiUser, FiBox, FiFileText, FiDollarSign, FiCpu, FiHash, FiExternalLink, FiLayers, FiCode } from "react-icons/fi";
 import LoadingSpinner from "@/app/components/loadingSpinner";
+import Link from "next/link";
 
 export default function TransactionPage({ params }) {
   const { id } = params;
@@ -77,7 +78,7 @@ const TransactionInfo = ({ transaction }) => (
     <div className="grid grid-cols-2 gap-4">
       <InfoItem icon={FiBox} label="Block" value={transaction.block} />
       <InfoItem icon={FiFileText} label="Type" value={transaction.tx_types.join(', ')} />
-      <InfoItem icon={FiDollarSign} label="Value" value={`${transaction.value} ETH`} />
+      <InfoItem icon={FiDollarSign} label="Value" value={`${transaction.value} WEI`} />
       <InfoItem icon={FiCpu} label="Gas Used" value={transaction.gas_used} />
       <InfoItem icon={FiLayers} label="Confirmations" value={transaction.confirmations} />
       {transaction.method && (
@@ -91,7 +92,7 @@ const AddressesInfo = ({ transaction }) => (
   <div>
     <h2 className="text-xl font-semibold mb-4 text-gray-700">Addresses</h2>
     <div className="space-y-4">
-      <AddressItem label="From" address={transaction.from} />
+     <AddressItem label="From" address={transaction.from} />
       <AddressItem label="To" address={transaction.to || transaction.created_contract} />
     </div>
   </div>
@@ -124,8 +125,10 @@ const AddressItem = ({ label, address }) => (
     <p className="text-xs text-gray-500 mb-1">{label}</p>
     <div className="flex items-center bg-gray-100 p-3 rounded">
       <FiUser className="text-blue-500 mr-2" />
-      <span className="text-sm font-medium text-gray-800 break-all">
+      <span className="text-sm font-medium text-blue-700 break-all">
+        <Link href={`/account/${address ? (address.hash || 'N/A') : 'N/A'}`}>
         {address ? (address.hash || 'N/A') : 'N/A'}
+        </Link>
       </span>
     </div>
   </div>

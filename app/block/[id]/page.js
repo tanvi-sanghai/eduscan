@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { FiClock, FiHash, FiUser, FiBox, FiCpu, FiDollarSign, FiLayers, FiServer } from 'react-icons/fi';
 import LoadingSpinner from '@/app/components/loadingSpinner';
+import Link from 'next/link';
 
 export default function BlockPage({ params }) {
   const [block, setBlock] = useState(null);
@@ -52,8 +53,12 @@ export default function BlockPage({ params }) {
             <InfoGrid>
               <InfoItem icon={FiLayers} label="Height" value={block.height} />
               <InfoItem icon={FiServer} label="Size" value={`${block.size} bytes`} />
-              <InfoItem icon={FiHash} label="Parent Hash" value={block.parent_hash.slice(0, 10) + '...'} />
-              <InfoItem icon={FiUser} label="Miner" value={block.miner.hash.slice(0, 10) + '...'} />
+             <Link href={`/account/${block.parent_hash}`}> 
+              <InfoItem icon={FiHash} label="Parent Hash" value={block.parent_hash.slice(0, 10) + '...'} linkornot={true}/>
+              </Link>
+              <Link href={`/account/${block.miner.hash}`}>
+              <InfoItem icon={FiUser} label="Miner" value={block.miner.hash.slice(0, 10) + '...'} linkornot={true} />
+              </Link>
             </InfoGrid>
           </Section>
 
@@ -93,12 +98,12 @@ const InfoGrid = ({ children }) => (
   </div>
 );
 
-const InfoItem = ({ icon: Icon, label, value }) => (
+const InfoItem = ({ icon: Icon, label, value, linkornot }) => (
   <div className="flex items-center bg-gray-50 p-3 rounded-lg">
     <Icon className="text-blue-500 mr-3" />
     <div>
       <p className="text-xs text-gray-500">{label}</p>
-      <p className="text-sm font-medium text-gray-800">{value}</p>
+      <p className={`text-sm font-medium text-gray-800 ${linkornot ? 'text-blue-700' : ''}`}>{value}</p>
     </div>
   </div>
 );
