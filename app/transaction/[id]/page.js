@@ -56,9 +56,7 @@ const TransactionHeader = ({ transaction }) => (
     <div className="flex items-center space-x-2">
       <FiHash className="text-blue-200" />
       <p className="text-sm break-all">{transaction.hash}</p>
-      <a href={`https://opencampus-codex.blockscout.com/tx/${transaction.hash}`} target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-white">
-        <FiExternalLink />
-      </a>
+      
     </div>
   </div>
 );

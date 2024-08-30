@@ -66,7 +66,7 @@ const Header = () => {
       case 'address':
         return `/account/${searchResult.address}`;
       case 'transaction':
-        return `/tx/${searchResult.tx_hash}`;
+        return `/transaction/${searchResult.tx_hash}`;
       case 'block':
         return `/block/${searchResult.block_hash}`;
       default:
