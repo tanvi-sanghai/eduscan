@@ -8,7 +8,7 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiClock,
-  FiBox,
+  FiCalendar,
   FiTag,
 } from "react-icons/fi";
 import LoadingSpinner from "@/app/components/loadingSpinner";
@@ -24,20 +24,69 @@ export default function AccountPage({ params }) {
     transactions: [],
     tokens: [],
     tokenTransfers: [],
-    
+    internalTransactions: [],
+    coinBalanceHistory: [],
+    firstTransactionDate: null,
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("transactions");
 
+  const fetchAllTransactions = async (addressId) => {
+    let allTransactions = [];
+    let nextPageParams = null;
+    let earliestTransactionDate = null;
+    let pageCount = 0;
+    const MAX_PAGES = 5; // Adjust this value as needed
+
+    do {
+        const endpoint = `/addresses/${addressId}/transactions?filter=to%20%7C%20from${
+            nextPageParams
+                ? `&block_number=${nextPageParams.block_number}&index=${nextPageParams.index}`
+                : ''
+        }`;
+        console.log(`Fetching page ${pageCount + 1}:`, endpoint);
+
+        const response = await fetch(`${API_BASE_URL}${endpoint}`);
+        if (!response.ok) throw new Error('Failed to fetch transactions');
+        const data = await response.json();
+
+        allTransactions = [...allTransactions, ...data.items];
+        nextPageParams = data.next_page_params;
+
+        // Update earliest transaction date
+        data.items.forEach(transaction => {
+            const transactionDate = new Date(transaction.timestamp);
+            if (!earliestTransactionDate || transactionDate < earliestTransactionDate) {
+                earliestTransactionDate = transactionDate;
+            }
+        });
+
+        pageCount++;
+        
+        // Stop if we've reached the maximum number of pages or if there are no more items
+        if (pageCount >= MAX_PAGES || data.items.length === 0) {
+            console.log(`Stopping pagination: ${pageCount >= MAX_PAGES ? 'Max pages reached' : 'No more items'}`);
+            break;
+        }
+
+    } while (nextPageParams);
+
+    console.log(`Total pages fetched: ${pageCount}`);
+    console.log(`Total transactions: ${allTransactions.length}`);
+    console.log(`First Transaction Date: ${earliestTransactionDate ? earliestTransactionDate.toLocaleDateString() : 'No transactions'}`);
+
+    return { 
+        transactions: allTransactions, 
+        firstTransactionDate: earliestTransactionDate ? earliestTransactionDate.toLocaleDateString() : null 
+    };
+};
   useEffect(() => {
     const fetchAllData = async () => {
       const endpoints = {
         account: `/addresses/${params.id}`,
-        transactions: `/addresses/${params.id}/transactions?filter=to%20%7C%20from`,
         tokens: `/addresses/${params.id}/tokens?type=ERC-20%2CERC-721%2CERC-1155`,
         tokenTransfers: `/addresses/${params.id}/token-transfers?type=ERC-20%2CERC-721%2CERC-1155&filter=to%20%7C%20from`,
-        internalTransactions: `/addresses/${params.id}/internal-transactions`,
-        coinBalanceHistory: `/addresses/${params.id}/coin-balance-history`
+        
       };
 
       try {
@@ -50,7 +99,14 @@ export default function AccountPage({ params }) {
           })
         );
 
-        setAccountData(Object.fromEntries(results));
+        console.log("Fetching all transactions");
+        const { transactions, firstTransactionDate } = await fetchAllTransactions(params.id);
+
+        setAccountData({
+          ...Object.fromEntries(results),
+          transactions,
+          firstTransactionDate,
+        });
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -64,7 +120,9 @@ export default function AccountPage({ params }) {
   if (loading) return <LoadingSpinner />;
   if (!accountData.account) return <ErrorMessage message="Account not found" />;
 
-  const { account } = accountData;
+ 
+
+  const { account, firstTransactionDate } = accountData;
 
   const tabs = [
     { id: "transactions", label: "Transactions" },
@@ -89,9 +147,9 @@ export default function AccountPage({ params }) {
       value: account.is_verified ? "Yes" : "No",
     },
     {
-      icon: FiClock,
-      label: "Last Balance Update",
-      value: `Block #${account.block_number_balance_updated_at}`,
+      icon: FiCalendar,
+      label: "First Transaction",
+      value: firstTransactionDate || "No transactions",
     },
   ];
 
@@ -138,10 +196,8 @@ export default function AccountPage({ params }) {
           )}
           {activeTab === "tokens" && <TokensTab tokens={accountData.tokens} />}
           {activeTab === "tokenTransfers" && (
-            console.log(accountData.tokenTransfers),
             <TokenTransfersTab transfers={accountData.tokenTransfers} currentAddress={params.id} />
           )}
-          
         </div>
       </div>
     </div>
@@ -173,10 +229,6 @@ const TransactionsTab = ({ transactions }) => (
   </div>
 );
 
-const ErrorMessage = ({ message }) => (
-  <div className="text-center mt-20 text-red-600 text-xl">{message}</div>
-);
-
 const TokensTab = ({ tokens }) => (
   <div className="space-y-4">
     <h2 className="text-2xl font-semibold mb-4 text-gray-700">Tokens</h2>
@@ -196,3 +248,6 @@ const TokensTab = ({ tokens }) => (
   </div>
 );
 
+const ErrorMessage = ({ message }) => (
+  <div className="text-center mt-20 text-red-600 text-xl">{message}</div>
+);
