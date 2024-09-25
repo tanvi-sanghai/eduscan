@@ -3,7 +3,7 @@ import { useState } from "react";
 import data from "@/app/dapps.json";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import illustration from "@/app/assets/dApp3.png";
+import illustration from "@/app/assets/dapp3.png";
 import sampleimage from "@/app/assets/sample.png";
 
 const Hero = () => (
