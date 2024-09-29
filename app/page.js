@@ -67,10 +67,21 @@ export default function Home() {
       </header>
 
       <main className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row gap-8">
-          <StatsBox />
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="lg:w-1/2 space-y-6">
+            <StatsBox />
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold text-gray-700 mb-4">Explore Our Ecosystem</h3>
+              <p className="text-gray-500 text-xs mb-4">Discover the diverse range of dapps built on Educhain.</p>
+              <Link href="/ecosystem" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-300 font-medium">
+                View Ecosystem
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
 
           <section className="md:w-2/3">
+          <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-semibold text-gray-700">
                 Latest Transactions
@@ -93,6 +104,7 @@ export default function Home() {
                   No transactions available.
                 </p>
               )}
+            </div>
             </div>
           </section>
         </div>

@@ -42,7 +42,7 @@ const StatsBox = () => {
   );
 
   return (
-    <section className="md:w-1/3">
+      <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold mb-4 text-gray-700">Network Analytics</h2>
       <div className="grid grid-cols-2 gap-4">
         <StatCard icon={<FiCpu className="text-blue-500" />} title="Total Blocks" value={stats.total_blocks} />
@@ -52,8 +52,9 @@ const StatsBox = () => {
         <StatCard icon={<FiDollarSign className="text-red-500" />} title="Coin Price" value={`$${parseFloat(stats.coin_price || 0).toFixed(5)}`} />
         <StatCard icon={<FiTrendingUp className="text-indigo-500" />} title="Network Utilization" value={`${(stats.network_utilization_percentage || 0).toFixed(2)}%`} />
       </div>
-    </section>
+      </div>
   );
 };
+
 
 export default StatsBox;
