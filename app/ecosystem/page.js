@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import data from "@/app/dapps.json";
 import Image from "next/image";
 import { Search, ExternalLink, X } from "lucide-react";
-import sampleimage from "@/app/assets/sample.png";
+
 import Hero from "@/app/ecosystem/components/hero";
 import DAppPopup from "@/app/ecosystem/components/dappPopup";
 
@@ -15,7 +15,7 @@ const DAppCard = ({ dapp, onViewMore }) => {
       <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 rounded-full mb-3 sm:mb-4 overflow-hidden">
         {!logoError ? (
           <Image
-            src={sampleimage}
+            src={dapp["Project logo"]}
             alt={`${dapp["Project name"]} logo`}
             width={64}
             height={64}

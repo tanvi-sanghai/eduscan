@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { ExternalLink, X } from "lucide-react";
-import sampleimage from "@/app/assets/sample.png";
 
 
 const DAppPopup = ({ dapp, onClose }) => (
@@ -15,7 +14,7 @@ const DAppPopup = ({ dapp, onClose }) => (
         </div>
         <div className="mb-4">
           <Image
-            src={sampleimage}
+            src={dapp["Project logo"]}
             alt={`${dapp["Project name"]} logo`}
             width={100}
             height={100}

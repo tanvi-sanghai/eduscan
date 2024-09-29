@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import illustration from "@/app/assets/dapp3.png";
+import illustration from "@/public/assets/dapp3.png";
 
 const Hero = () => (
   <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 flex flex-col md:flex-row items-center justify-between">
