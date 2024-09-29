@@ -53,7 +53,7 @@ const AllDApps = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDApp, setSelectedDApp] = useState(null);
-  const itemsPerPage = 8;
+  const itemsPerPage = 12;
 
   const categories = useMemo(() => [...new Set(data.map((dapp) => dapp["Project category tag"]))], []);
 
