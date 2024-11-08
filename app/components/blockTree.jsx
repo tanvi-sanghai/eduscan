@@ -11,7 +11,7 @@ const BlockTree = () => {
 
   const fetchBlocks = async () => {
     try {
-      const response = await fetch("https://opencampus-codex.blockscout.com/api/v2/blocks?type=block", {
+      const response = await fetch("https://edu-chain-testnet.blockscout.com/api/v2/blocks?type=block", {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
@@ -97,13 +97,13 @@ const BlockTree = () => {
         ) : (
           <>
             <div className="flex justify-between items-start mb-2 w-full">
-              <span className="font-bold text-lg text-blue-600">
+              <span className="font-bold text-base text-blue-600">
                 <Link href={`/block/${block.height}`}>
                   #{block.height}
                 </Link>
               </span>
               <span className="text-xs bg-gray-100 text-gray-600 py-1 px-2 rounded-full flex items-center">
-                <FiClock className="mr-1" />
+                {/* <FiClock className="mr-1" /> */}
                 {formatTimestamp(block.timestamp)}
               </span>
             </div>

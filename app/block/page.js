@@ -9,7 +9,7 @@ export default function Home() {
 
     const fetchBlocks = async () => {
         setLoading(true);
-        const url = 'https://opencampus-codex.blockscout.com/api/v2/blocks?type=block&limit=50';
+        const url = 'https://edu-chain-testnet.blockscout.com/api/v2/blocks?type=block&limit=50';
 
         try {
             const response = await fetch(url);

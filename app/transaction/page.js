@@ -26,7 +26,7 @@ export default function Home() {
             page: currentPage,
             limit: transactionsPerPage
         });
-        const url = `https://opencampus-codex.blockscout.com/api/v2/transactions?${queryParams}`;
+        const url = `https://edu-chain-testnet.blockscout.com/api/v2/transactions?${queryParams}`;
 
         try {
             const response = await fetch(url);

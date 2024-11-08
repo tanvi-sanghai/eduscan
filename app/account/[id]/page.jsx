@@ -16,7 +16,7 @@ import TransactionCard from "@/app/components/transactionCard";
 import TokenCard from "@/app/components/tokenCard";
 import TokenTransfersTab from "@/app/components/tokenTransferTab";
 
-const API_BASE_URL = "https://opencampus-codex.blockscout.com/api/v2";
+const API_BASE_URL = "https://edu-chain-testnet.blockscout.com/api/v2";
 
 export default function AccountPage({ params }) {
   const [accountData, setAccountData] = useState({

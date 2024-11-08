@@ -7,7 +7,7 @@ const StatsBox = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("https://opencampus-codex.blockscout.com/api/v2/stats", {
+      const response = await fetch("https://edu-chain-testnet.blockscout.com/api/v2/stats", {
         method: "GET",
         headers: {
           "Content-Type": "application/json"

@@ -12,7 +12,7 @@ export default function TransactionPage({ params }) {
   useEffect(() => {
     const fetchTransaction = async () => {
       try {
-        const response = await fetch(`https://opencampus-codex.blockscout.com/api/v2/transactions/${id}`);
+        const response = await fetch(`https://edu-chain-testnet.blockscout.com/api/v2/transactions/${id}`);
         if (!response.ok) throw new Error('Failed to fetch transaction');
         const data = await response.json();
         setTransaction(data);

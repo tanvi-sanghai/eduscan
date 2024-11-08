@@ -11,7 +11,7 @@ export default function BlockPage({ params }) {
   useEffect(() => {
     const fetchBlock = async () => {
       try {
-        const response = await fetch(`https://opencampus-codex.blockscout.com/api/v2/blocks/${params.id}`);
+        const response = await fetch(`https://edu-chain-testnet.blockscout.com/api/v2/blocks/${params.id}`);
         if (!response.ok) throw new Error('Failed to fetch block');
         const data = await response.json();
         setBlock(data);

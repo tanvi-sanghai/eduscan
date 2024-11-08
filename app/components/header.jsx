@@ -36,7 +36,7 @@ const Header = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`https://opencampus-codex.blockscout.com/api/v2/search?q=${searchTerm}`, {
+      const response = await fetch(`https://edu-chain-testnet.blockscout.com/api/v2/search?q=${searchTerm}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"

@@ -15,7 +15,7 @@ export default function Home() {
   const fetchTransactions = async () => {
     try {
       const response = await fetch(
-        "https://opencampus-codex.blockscout.com/api/v2/main-page/transactions",
+        "https://edu-chain-testnet.blockscout.com/api/v2/main-page/transactions",
         {
           method: "GET",
           headers: {
